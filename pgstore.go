@@ -9,7 +9,7 @@ import (
 
 // PgStore represents the session store.
 type PgStore struct {
-	db          *pg.Conn
+	db          *pg.DB
 	stopCleanup chan bool
 }
 
@@ -21,11 +21,11 @@ type Session struct {
 	Expiry    time.Time `pg:",notnull"`
 }
 
-func New(db *pg.Conn) *PgStore {
+func New(db *pg.DB) *PgStore {
 	return NewWithCleanupInterval(db, 5*time.Minute)
 }
 
-func NewWithCleanupInterval(db *pg.Conn, cleanupInterval time.Duration) *PgStore {
+func NewWithCleanupInterval(db *pg.DB, cleanupInterval time.Duration) *PgStore {
 	p := &PgStore{db: db}
 	if cleanupInterval > 0 {
 		go p.startCleanup(cleanupInterval)
